@@ -4,4 +4,4 @@
 ../Drivers/Device_Drivers/DS1307/DS1307.c:43:9:DEC2BCD	1
 ../Drivers/Device_Drivers/DS1307/DS1307.c:52:16:Ds1307_init	3
 ../Drivers/Device_Drivers/DS1307/DS1307.c:84:16:Ds1307_set	3
-../Drivers/Device_Drivers/DS1307/DS1307.c:124:16:Ds1307_read	6
+../Drivers/Device_Drivers/DS1307/DS1307.c:124:16:Ds1307_read	4

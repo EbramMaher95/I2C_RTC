@@ -122,59 +122,31 @@ DS1307_state_t Ds1307_set(ds1307_t *clock) {
 
 //read the time function
 DS1307_state_t Ds1307_read(ds1307_t *clock) {
-
-	//uint8_t status = 1;
-
 	clock->i2c_buffer[0] = start_address;
 
-	if (I2C__write(dev_SLA, clock->i2c_buffer, 1, clock) == 1) {
+	    if (I2C__write(dev_SLA, clock->i2c_buffer, 1, clock) == 1) {
+	        if (I2C__read(dev_SLA, clock->i2c_buffer, 7, clock) == 1) {
+	            clock->sec = BCD2DEC(clock->i2c_buffer[0] & 0x7F);
+	            clock->min = BCD2DEC(clock->i2c_buffer[1]);
+	            clock->format = (clock->i2c_buffer[2] & 0b01000000) >> 6;
 
-		if (I2C__read(dev_SLA, clock->i2c_buffer, 7, clock) == 1) {
+	            if (clock->format == 1) { // 12h format
+	                clock->hour = BCD2DEC(clock->i2c_buffer[2] & 0b00011111);
+	                clock->AM_PM = (clock->i2c_buffer[2] & 0b00100000) >> 5;
+	            } else { // 24h format
+	                clock->hour = BCD2DEC(clock->i2c_buffer[2] & 0b00111111);
+	                clock->AM_PM = (clock->hour > 11) ? 1 : 0;
+	            }
 
-			clock->sec = BCD2DEC(clock->i2c_buffer[0] & (0x7f));
-			clock->min = BCD2DEC(clock->i2c_buffer[0]);
-			clock->format = (clock->i2c_buffer[2] & 0b01000000) >> 6;
+	            clock->day = BCD2DEC(clock->i2c_buffer[3]);
+	            clock->date = BCD2DEC(clock->i2c_buffer[4]);
+	            clock->month = BCD2DEC(clock->i2c_buffer[5]);
+	            clock->year = BCD2DEC(clock->i2c_buffer[6]) + 2000;
 
-			if (clock->format == 1) // 12h format
-					{
-
-				clock->hour = BCD2DEC(clock->i2c_buffer[0] & 0b00011111);
-
-				clock->AM_PM = (clock->i2c_buffer[2] & 0b00100000) >> 5;
-			} else //in 24h case
-			{
-
-				clock->hour = BCD2DEC(clock->i2c_buffer[0] & 0b00111111); //this is it hold hours to 24 hours
-
-				//in case of PM
-				if (clock->hour > 11) {
-					clock->AM_PM = 1;
-				}
-
-				//case of AM
-				else {
-
-					clock->AM_PM = 0;
-				}
-			}
-
-			clock->day = BCD2DEC(clock->i2c_buffer[3]);
-
-			clock->date = BCD2DEC(clock->i2c_buffer[4]);
-
-			clock->month = BCD2DEC(clock->i2c_buffer[5]);
-
-			clock->year = BCD2DEC(clock->i2c_buffer[6] + 2000);
-
-		}
-
-	}
-	if (I2C__read(dev_SLA, clock->i2c_buffer, 1, clock) == 1) {
-
-		return DS1307_OK;
-	} else {
-
-		return DS1307_NOK;
+	            return DS1307_OK;
+	        }
+	    }
+	    return DS1307_NOK;
 	}
 
-}
+

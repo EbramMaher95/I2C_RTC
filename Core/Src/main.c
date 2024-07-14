@@ -23,6 +23,9 @@
 /* USER CODE BEGIN Includes */
 
 #include "../../Drivers/Device_Drivers/DS1307/DS1307.h"
+
+#include <string.h>
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -102,12 +105,33 @@ int main(void) {
 		HAL_UART_Transmit(&huart1, "RTC init did not complete\r\n", 27, 100);
 	}
 
+	// a string to save the read time
+	char timeString[50];
+
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
 		/* USER CODE END WHILE */
+
+		// Read time from DS1307
+		if (Ds1307_read(&CLK) == DS1307_OK) //in case reading is ok
+		{
+
+			snprintf(timeString, sizeof(timeString),
+					"Time is: %02d:%02d:%02d\r\n", CLK.hour, CLK.min, CLK.sec);
+
+			// Transmit time over UART
+			HAL_UART_Transmit(&huart1, (uint8_t*) timeString,
+					strlen(timeString), 100);
+		} else {
+			HAL_UART_Transmit(&huart1, (uint8_t*) "Failed to read time\r\n", 21,
+					100);
+		}
+
+		// Wait for 250 ms
+		HAL_Delay(250);
 
 		/* USER CODE BEGIN 3 */
 
