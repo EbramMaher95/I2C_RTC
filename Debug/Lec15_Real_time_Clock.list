@@ -128,10 +128,8 @@ int main(void) {
  8000178:	4809      	ldr	r0, [pc, #36]	@ (80001a0 <main+0x54>)
  800017a:	f002 f9d9 	bl	8002530 <HAL_UART_Transmit>
  800017e:	e006      	b.n	800018e <main+0x42>
-	}
-	else
-	{
-		HAL_UART_Transmit(&huart1, "RTC init did not complete\r\n",27, 100);
+	} else {
+		HAL_UART_Transmit(&huart1, "RTC init did not complete\r\n", 27, 100);
  8000180:	2364      	movs	r3, #100	@ 0x64
  8000182:	221b      	movs	r2, #27
  8000184:	4907      	ldr	r1, [pc, #28]	@ (80001a4 <main+0x58>)

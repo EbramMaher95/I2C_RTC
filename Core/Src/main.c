@@ -98,10 +98,8 @@ int main(void) {
 
 	if (Ds1307_init(&CLK, &hi2c1) == DS1307_OK) {
 		HAL_UART_Transmit(&huart1, "RTC init completed\r\n", 20, 100);
-	}
-	else
-	{
-		HAL_UART_Transmit(&huart1, "RTC init did not complete\r\n",27, 100);
+	} else {
+		HAL_UART_Transmit(&huart1, "RTC init did not complete\r\n", 27, 100);
 	}
 
 	/* USER CODE END 2 */
