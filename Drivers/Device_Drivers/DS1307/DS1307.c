@@ -111,7 +111,7 @@ DS1307_state_t Ds1307_set(ds1307_t *clock) {
 
 	clock->i2c_buffer[7] = DEC2BCD(clock->year - 2000);
 
-	if (I2C__write(dev_SLA, clock->i2c_buffer, 1, clock) == 1) {
+	if (I2C__write(dev_SLA, clock->i2c_buffer, 8, clock) == 1) {
 
 		return DS1307_OK;
 	} else {
